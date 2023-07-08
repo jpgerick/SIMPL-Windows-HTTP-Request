@@ -19,7 +19,7 @@ String_Input Path[MAXPATHLENGTH],IPAddressOrHostname_Serial[MAXADDRESSLENGTH],Ho
 Buffer_Input Payload[MAXPAYLOADSIZE]; // Fill up payload buffer first before pushing Send.
 
 #IF_NOT_DEFINED SERIES2
-#USER_SIMPLSHARP_LIBRARY "SecureTCP"
+#USER_SIMPLSHARP_LIBRARY "SecureTCP3"
 #ENDIF
 
 Digital_Output Sent,Connected_F;
