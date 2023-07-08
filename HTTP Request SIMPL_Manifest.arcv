@@ -1,0 +1,28 @@
+[BEGIN]
+  ObjTp=FSgntr
+  Sgntr=ArchiveManifest
+  RelVrs=4.2500.04
+  IsProgram=0
+  TopLevelProgram=HTTP Request SIMPL.umc
+[END]
+[BEGIN]
+  ObjTp=ArchiveItem
+  File=HTTP Request SIMPL.umc
+  Scope=1
+[END]
+[BEGIN]
+  ObjTp=ArchiveItem
+  File=Config.xml
+  Scope=1
+[END]
+[BEGIN]
+  ObjTp=ArchiveItem
+  File=SIMPL+ HTTP Request.ush
+  Scope=1
+[END]
+[BEGIN]
+  ObjTp=ArchiveItem
+  File=SecureTCP.clz
+  Scope=1
+  Module=SIMPL+ HTTP Request.ush
+[END]

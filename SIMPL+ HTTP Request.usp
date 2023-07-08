@@ -1,0 +1,356 @@
+#DEFINE_CONSTANT MAXPAYLOADSIZE 1000
+#DEFINE_CONSTANT MAXREQUESTSIZE 10000
+#DEFINE_CONSTANT MAXHEADERSIZE 255
+#DEFINE_CONSTANT MAXNUMHEADERS 32
+#DEFINE_CONSTANT MAXPATHLENGTH 255
+#DEFINE_CONSTANT MAXADDRESSLENGTH 64
+#DEFINE_CONSTANT WAITTIME 1000
+#DEFINE_CONSTANT MAXRESPONSELENGTH 50000
+#DEFINE_CONSTANT HOSTLENGTH 64
+
+
+#IF_SERIES2
+#DEFINE_CONSTANT SERIES2 1
+#ENDIF
+
+Digital_Input Send,Enable_Debug,SSL_TLS,Include_Host; //SSL/TLS not supported on 2-series.
+Analog_Input Method,HTTPVersion,Port_Analog;// type 0 = get 1 = put 2 = post 3 = delete 4 = patch 5 = head 6 = connect 7 = options 8 = trace || HTTPVersion 0 = 1.0 1 = 1.1
+String_Input Path[MAXPATHLENGTH],IPAddressOrHostname_Serial[MAXADDRESSLENGTH],Host[HOSTLENGTH];
+Buffer_Input Payload[MAXPAYLOADSIZE]; // Fill up payload buffer first before pushing Send.
+
+#IF_NOT_DEFINED SERIES2
+#USER_SIMPLSHARP_LIBRARY "SecureTCP"
+#ENDIF
+
+Digital_Output Sent,Connected_F;
+Analog_Output ResponseCode;
+String_Output FullResponse,debug$;
+
+Integer_Parameter _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,Port;
+String_Parameter IPAddressOrHostname[MAXADDRESSLENGTH],Headers[MAXNUMHEADERS][MAXHEADERSIZE]; // need not include content-length, that is added after the other headers!
+
+TCP_Client Client[MAXRESPONSELENGTH];
+#IF_NOT_DEFINED SERIES2
+SPlusSecureTCPClient SecureClient;
+#ENDIF
+
+Integer Ready,real_port;
+string real_address[MAXADDRESSLENGTH];
+
+
+Function Debug(string text)
+{
+	if (Enable_Debug)
+	{
+		while (len(text) > 128)  // remove 128 characters at a time. If <= 128, removes and kicks out all at once.
+		{
+			debug$ = removebylength(128,text);
+		}
+		debug$ = removebylength(len(text),text);
+	}
+}
+
+Function Parse_Response(string response)
+{
+	integer firstspacelocation,secondspacelocation;
+	if (len(response))
+	{
+		firstspacelocation = find(" ",response);
+		secondspacelocation = find(" ",response,firstspacelocation+1);
+		//Example:
+		//HTTP/1.1 400 Bad Request
+		//firstspacelocation = 9
+		//number begins at 10
+		//secondspacelocation = 13
+		//delta = 4
+		if (secondspacelocation > firstspacelocation)
+		{
+			ResponseCode = atoi(mid(response,firstspacelocation+1,secondspacelocation-firstspacelocation-1));
+		}
+	}
+}
+
+String_Function Build_Request()
+{
+	string request[MAXREQUESTSIZE];
+	integer i;
+	string s[128];
+	switch(Method)
+	{
+		case(0): {request = request + "GET ";}
+		case(1): {request = request + "PUT ";}
+		case(2): {request = request + "POST ";}
+		case(3): {request = request + "DELETE ";}
+		case(4): {request = request + "PATCH ";}
+		case(5): {request = request + "HEAD ";}
+		case(6): {request = request + "CONNECT ";}
+		case(7): {request = request + "OPTIONS ";}
+		case(8): {request = request + "TRACE ";}
+	}
+	if (Path = "")
+	{
+		request = request + "/ "; //assume path = /
+    }
+	else
+	{
+		request = request + Path + " ";
+    }
+	switch(HTTPVersion)
+	{
+		case(0): {request = request + "HTTP/1.0\n";} // note, connection will be closed immediately by the server after a response is sent unless you use Connection: keep-alive as a header!
+		case(1): {request = request + "HTTP/1.1\n";} // persistent connections, use Connection: close as a header to make the server close the connection.
+	}
+	for (i = 1 to MAXNUMHEADERS)
+	{
+		if (Headers[i] <> "")
+		{
+			request = request + Headers[i] + "\n";
+		}
+	}
+	if (Include_Host && len(Host))
+	{
+		request = request + "Host: " + Host + "\n";
+	}
+	if (len(Payload) <> 0)
+	{
+		request = request + "Content-Length: " + itoa(len(Payload)) + "\n";	
+	}
+	request = request + "\n"; //double CRLF before payload
+	if (Payload <> "")
+	{
+		request = request + RemoveByLength(len(Payload),Payload); //Payload is a buffered input.
+	}
+	return(request);
+}
+
+Function Disconnect()
+{
+	signed_integer error;
+	string text[100];
+	if (Connected_F)
+	{
+		#IF_NOT_DEFINED SERIES2
+		if (SSL_TLS)
+		{
+			Debug("Disconnecting secured client.");
+			error = SecureClient.SocketDisconnectClient();
+		}
+		else
+		{
+			Debug("Disconnecting unsecured client.");
+			error = SocketDisconnectClient(Client);
+		}
+		#ENDIF
+		#IF_DEFINED SERIES2
+		Debug("Disconnecting unsecured client.");
+		error = SocketDisconnectClient(Client);
+		#ENDIF
+		if (error < 0)
+		{
+			makestring(text,"Error disconnecting from client: %i",error);
+			Debug(text);
+		}
+	}
+	else
+	{
+		Debug("Already disconnected before Disconnect method was called.");
+	}
+}
+
+
+Function WaitForResponse()
+{
+	wait(WAITTIME,responseWait)
+	{
+		Debug("Server did not respond after allotted time. Closing connection...");
+		Disconnect();
+	}
+}
+
+Push Send //threadsafe to prevent multiple attempts to connect to the same server.
+{
+	string text[100];
+	signed_integer error;
+	while (Ready = 0)
+	{
+		//lock this thread if Ready = 0 until program has completed starting so parameters will populate.
+	}
+	if (!Connected_F) //prevent multiple connections
+	{
+		if (Port_Analog > 0)
+		{
+			real_port = Port_Analog;
+		}
+		else if (Port > 0)
+		{
+			real_port = Port;
+		}
+		else
+		{
+			if (SSL_TLS)
+			{
+				real_port = 443;
+			}
+			else
+			{
+				real_port = 80;
+			}
+		}
+		if (len(IPAddressOrHostname_Serial) > 0)
+		{
+			real_address = IPAddressOrHostname_Serial;
+		}
+		else if (len(IPAddressOrHostname) > 0)
+		{
+			real_address = IPAddressOrHostname;
+		}
+		if ( (len(real_address) > 0) && (real_port > 0) )
+		{
+			#IF_NOT_DEFINED SERIES2
+			if (SSL_TLS)
+			{
+				error = SecureClient.SocketConnectClient(real_address,real_port,0,MAXRESPONSELENGTH);			
+			}
+			else if (!SSL_TLS)
+			{
+				error = SocketConnectClient(Client,real_address,real_port,0);
+			}
+			#ENDIF	
+			#IF_DEFINED SERIES2
+			error = SocketConnectClient(Client,real_address,real_port,0);
+			#ENDIF
+			if (!SSL_TLS) //The SSL/TLS operations are blocking calls, so these won't get called until it's all done.
+			{
+				if (error < 0)
+				{
+					makestring(text,"Error connecting to client: %i",error);
+					Debug(text);
+				}
+				else
+				{
+					Debug("SocketConnectClient success.");
+				}
+			}
+		}
+		else
+		{
+			Debug("Unable to connect due to no address or port specified.");
+		}
+	}
+}
+
+SocketConnect Client
+{
+	string text[500];
+	signed_integer error;
+	Connected_F = on;
+	makestring(text,"Sending: %s",Build_Request());
+	Debug(text);
+	WaitForResponse();
+	error = SocketSend(Client,Build_Request());
+	Sent = on;
+	ProcessLogic();
+	Sent = off;
+	ProcessLogic();
+	if (Payload <> "")
+	{
+		Clearbuffer(Payload);
+	}
+}
+
+SocketReceive Client
+{
+	signed_integer error;
+	cancelwait(responseWait);
+	Parse_Response(Client.SocketRxBuf);
+	while (len(Client.SocketRxBuf) > 128) // remove 128 characters at a time. If <= 128, removes and kicks out all at once.
+	{
+		FullResponse = RemoveByLength(128,Client.SocketRxBuf);
+	}
+	FullResponse = RemoveByLength(len(Client.SocketRxBuf),Client.SocketRxBuf);
+	Debug("Response received, calling disconnect now.");
+	Disconnect();
+}
+
+SocketDisconnect Client
+{
+	string text[50];
+	text = "Disconnected from server.";
+	Debug(text);
+	Connected_F = off;
+}
+
+#IF_NOT_DEFINED SERIES2 //event handlers for 3/4 series.
+EventHandler OnSocketConnect(SPlusSecureTCPClient c, EventArgs args)
+{
+	string text[100];
+	signed_integer error;
+	if (c = SecureClient)
+	{
+		Connected_F = on;
+		makestring(text,"Sending: %s",Build_Request());
+		Debug(text);
+		WaitForResponse(); //Do this first, you might get the reply before the next command finishes.
+		error = c.SocketSend(Build_Request());
+		Sent = on;
+		ProcessLogic();
+		Sent = off;
+		ProcessLogic();
+		if (Payload <> "")
+		{
+			Clearbuffer(Payload);
+		}
+	}
+}
+
+EventHandler OnSocketDisconnect(SPlusSecureTCPClient c, EventArgs args)
+{
+	string text[50];
+	if (c = SecureClient)
+	{
+		Connected_F = off;
+		text = "Disconnected from server.";
+		Debug(text);
+	}
+}
+EventHandler OnSocketStatusChange(SPlusSecureTCPClient c, SocketStatusChangeEventArgs args)
+{
+	string s[30];
+	if (c = SecureClient)
+	{
+		s = "Secured socket status: " + itoa(c.SocketGetStatus());
+		Debug(s);
+	}
+}
+EventHandler OnSocketReceive(SPlusSecureTCPClient c, ClientSocketReceiveEventArgs args)
+{
+	string received[MAXRESPONSELENGTH];
+	signed_integer error;
+	if (c = SecureClient)
+	{
+		cancelwait(responseWait);
+		received = SecureClient.SocketRxBuf;
+		Parse_Response(received);
+		while (len(received) > 128) // remove 128 characters at a time. If <= 128, removes and kicks out all at once.
+		{
+			FullResponse = RemoveByLength(128,received);
+		}
+		FullResponse = RemoveByLength(len(received),received);
+		c.ClearBuffer();
+		Disconnect();
+	}
+}
+#ENDIF
+
+Function Main()
+{
+	Ready = 0;
+	WaitForInitializationComplete();
+	#IF_NOT_DEFINED SERIES2
+	RegisterEvent(SecureClient,SocketConnect,OnSocketConnect);
+	RegisterEvent(SecureClient,SocketDisconnect,OnSocketDisconnect);
+	RegisterEvent(SecureClient,SocketStatus,OnSocketStatusChange);
+	RegisterEvent(SecureClient,SocketReceive,OnSocketReceive);
+	#ENDIF
+	Ready = 1;
+}

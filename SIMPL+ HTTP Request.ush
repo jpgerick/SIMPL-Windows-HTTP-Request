@@ -1,0 +1,500 @@
+[BEGIN]
+  Version=1
+[END]
+[BEGIN]
+  ObjTp=FSgntr
+  Sgntr=UserSPlus
+  RelVrs=1
+  IntStrVrs=1
+  SPlusVrs=4.06.00
+  CrossCplrVrs=1.3
+[END]
+[BEGIN]
+  ObjTp=Hd
+[END]
+[BEGIN]
+  ObjTp=Symbol
+  Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,718,756,854,
+  Exclusions_CDS=
+  Inclusions_CDS=5,6,7
+  Name=SIMPL+ HTTP Request
+  SmplCName=SIMPL+ HTTP Request.usp
+  Code=1
+  SysRev5=4.000
+  SMWRev=3.00.00
+  InputCue1=Send
+  InputSigType1=Digital
+  InputCue2=Enable_Debug
+  InputSigType2=Digital
+  InputCue3=SSL_TLS
+  InputSigType3=Digital
+  InputCue4=Include_Host
+  InputSigType4=Digital
+  OutputCue1=Sent
+  OutputSigType1=Digital
+  OutputCue2=Connected_F
+  OutputSigType2=Digital
+  InputList2Cue1=Method
+  InputList2SigType1=Analog
+  InputList2Cue2=HTTPVersion
+  InputList2SigType2=Analog
+  InputList2Cue3=Port_Analog
+  InputList2SigType3=Analog
+  InputList2Cue4=Path
+  InputList2SigType4=Serial
+  InputList2Cue5=IPAddressOrHostname_Serial
+  InputList2SigType5=Serial
+  InputList2Cue6=Host
+  InputList2SigType6=Serial
+  InputList2Cue7=Payload
+  InputList2SigType7=Serial
+  OutputList2Cue1=ResponseCode
+  OutputList2SigType1=Analog
+  OutputList2Cue2=FullResponse
+  OutputList2SigType2=Serial
+  OutputList2Cue3=debug$
+  OutputList2SigType3=Serial
+  ParamCue1=[Reference Name]
+  ParamCue2=[~UNUSED~]
+  ParamSigType2=Constant
+  ParamCue3=[~UNUSED~]
+  ParamSigType3=Constant
+  ParamCue4=[~UNUSED~]
+  ParamSigType4=Constant
+  ParamCue5=[~UNUSED~]
+  ParamSigType5=Constant
+  ParamCue6=[~UNUSED~]
+  ParamSigType6=Constant
+  ParamCue7=[~UNUSED~]
+  ParamSigType7=Constant
+  ParamCue8=[~UNUSED~]
+  ParamSigType8=Constant
+  ParamCue9=[~UNUSED~]
+  ParamSigType9=Constant
+  ParamCue10=[~UNUSED~]
+  ParamSigType10=Constant
+  ParamCue11=[~UNUSED~]
+  ParamSigType11=Constant
+  ParamCue12=[~UNUSED~]
+  ParamSigType12=Constant
+  ParamCue13=Port
+  ParamSigType13=Constant
+  ParamCue14=IPAddressOrHostname
+  ParamSigType14=String
+  ParamCue15=Headers[1]
+  ParamSigType15=String
+  ParamCue16=Headers[2]
+  ParamSigType16=String
+  ParamCue17=Headers[3]
+  ParamSigType17=String
+  ParamCue18=Headers[4]
+  ParamSigType18=String
+  ParamCue19=Headers[5]
+  ParamSigType19=String
+  ParamCue20=Headers[6]
+  ParamSigType20=String
+  ParamCue21=Headers[7]
+  ParamSigType21=String
+  ParamCue22=Headers[8]
+  ParamSigType22=String
+  ParamCue23=Headers[9]
+  ParamSigType23=String
+  ParamCue24=Headers[10]
+  ParamSigType24=String
+  ParamCue25=Headers[11]
+  ParamSigType25=String
+  ParamCue26=Headers[12]
+  ParamSigType26=String
+  ParamCue27=Headers[13]
+  ParamSigType27=String
+  ParamCue28=Headers[14]
+  ParamSigType28=String
+  ParamCue29=Headers[15]
+  ParamSigType29=String
+  ParamCue30=Headers[16]
+  ParamSigType30=String
+  ParamCue31=Headers[17]
+  ParamSigType31=String
+  ParamCue32=Headers[18]
+  ParamSigType32=String
+  ParamCue33=Headers[19]
+  ParamSigType33=String
+  ParamCue34=Headers[20]
+  ParamSigType34=String
+  ParamCue35=Headers[21]
+  ParamSigType35=String
+  ParamCue36=Headers[22]
+  ParamSigType36=String
+  ParamCue37=Headers[23]
+  ParamSigType37=String
+  ParamCue38=Headers[24]
+  ParamSigType38=String
+  ParamCue39=Headers[25]
+  ParamSigType39=String
+  ParamCue40=Headers[26]
+  ParamSigType40=String
+  ParamCue41=Headers[27]
+  ParamSigType41=String
+  ParamCue42=Headers[28]
+  ParamSigType42=String
+  ParamCue43=Headers[29]
+  ParamSigType43=String
+  ParamCue44=Headers[30]
+  ParamSigType44=String
+  ParamCue45=Headers[31]
+  ParamSigType45=String
+  ParamCue46=Headers[32]
+  ParamSigType46=String
+  MinVariableInputs=4
+  MaxVariableInputs=4
+  MinVariableInputsList2=7
+  MaxVariableInputsList2=7
+  MinVariableOutputs=2
+  MaxVariableOutputs=2
+  MinVariableOutputsList2=3
+  MaxVariableOutputsList2=3
+  MinVariableParams=14
+  MaxVariableParams=45
+  Expand=expand_separately
+  Expand2=expand_separately
+  ProgramTree=Logic
+  SymbolTree=32
+  Hint=
+  PdfHelp=
+  HelpID= 
+  Render=4
+  Smpl-C=16
+  CompilerCode=-48
+  CompilerParamCode=27
+  CompilerParamCode5=14
+  NumFixedParams=1
+  Pp1=1
+  Pp13=13
+  Pp14=14
+  Pp15=15
+  Pp16=16
+  Pp17=17
+  Pp18=18
+  Pp19=19
+  Pp20=20
+  Pp21=21
+  Pp22=22
+  Pp23=23
+  Pp24=24
+  Pp25=25
+  Pp26=26
+  Pp27=27
+  Pp28=28
+  Pp29=29
+  Pp30=30
+  Pp31=31
+  Pp32=32
+  Pp33=33
+  Pp34=34
+  Pp35=35
+  Pp36=36
+  Pp37=37
+  Pp38=38
+  Pp39=39
+  Pp40=40
+  Pp41=41
+  Pp42=42
+  Pp43=43
+  Pp44=44
+  Pp45=45
+  Pp46=46
+  MPp=46
+  NVStorage=10
+  ParamSigType1=String
+  SmplCInputCue1=o#
+  SmplCOutputCue1=i#
+  SmplCInputList2Cue1=an#
+  SmplCOutputList2Cue1=ai#
+  SPlus2CompiledName=S2_SIMPL__HTTP_Request
+  SymJam=NonExclusive
+  FileName=SIMPL+ HTTP Request.ush
+  SIMPLPlusModuleEncoding=0
+  clz1=SecureTCP
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=1
+  Tp=1
+  NoS=False
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=13
+  Tp=1
+  HD=False
+  Sgn=0
+  Lng=False
+  NF=63
+  NoS=True
+  DNF=1
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=14
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=15
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=16
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=17
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=18
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=19
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=20
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=21
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=22
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=23
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=24
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=25
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=26
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=27
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=28
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=29
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=30
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=31
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=32
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=33
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=34
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=35
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=36
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=37
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=38
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=39
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=40
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=41
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=42
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=43
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=44
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=45
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=46
+  Tp=1
+  HD=False
+  NoS=False
+  VVS=0
+[END]
